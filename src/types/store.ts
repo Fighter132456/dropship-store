@@ -12,6 +12,8 @@ export type TenantTheme = {
     tagline?: string;
     footer?: string;
   };
+  umami_website_id?: string;
+  support_email?: string;
 };
 
 export type Tenant = {

@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { resolveTenantLookup } from "@/lib/tenant";
 
 export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname === "/tenant-not-found") {
+    return NextResponse.next();
+  }
+
   const host = request.headers.get("host") ?? "localhost";
   const tenantParam = request.nextUrl.searchParams.get("tenant");
   const lookup = resolveTenantLookup(host, tenantParam);
@@ -44,10 +48,10 @@ export async function middleware(request: NextRequest) {
   const { data: tenant, error } = await query;
 
   if (error || !tenant) {
-    return NextResponse.json(
-      { error: `Tenant not found for ${lookup.field}=${lookup.value}` },
-      { status: 404 },
-    );
+    const url = request.nextUrl.clone();
+    url.pathname = "/tenant-not-found";
+    url.searchParams.set("host", lookup.value);
+    return NextResponse.rewrite(url, { status: 404 });
   }
 
   const requestHeaders = new Headers(request.headers);

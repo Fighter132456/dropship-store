@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
-import { Header } from "@/components/Header";
+import { StoreShell } from "@/components/StoreShell";
 import { formatPrice } from "@/lib/format";
 import { getProductForCurrentTenant } from "@/lib/products";
 import { getTenant } from "@/lib/tenant";
@@ -27,8 +27,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const image = product.images_json[0];
 
   return (
-    <>
-      <Header tenant={tenant} />
+    <StoreShell tenant={tenant}>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <Link href="/" className="mb-6 inline-block text-sm text-slate-600 hover:text-slate-900">
           ← Back to products
@@ -59,6 +58,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </div>
       </main>
-    </>
+    </StoreShell>
   );
 }

@@ -89,7 +89,7 @@ async function main() {
 
   if (s1RpcErr) throw new Error(`store1 RPC list: ${s1RpcErr.message}`);
 
-  const s1Skus = (store1Visible ?? []).map((p: { sku: string }) => p.sku);
+  const s1Skus: string[] = (store1Visible ?? []).map((p: { sku: string }) => p.sku);
   if (s1Skus.some((sku) => sku.startsWith("CJ-STORE2-"))) {
     throw new Error(`RLS FAIL: store1 RPC sees store2 SKUs: ${s1Skus.join(", ")}`);
   }
@@ -107,7 +107,7 @@ async function main() {
 
   if (s2RpcErr) throw new Error(`store2 RPC list: ${s2RpcErr.message}`);
 
-  const s2Skus = (store2Visible ?? []).map((p: { sku: string }) => p.sku);
+  const s2Skus: string[] = (store2Visible ?? []).map((p: { sku: string }) => p.sku);
   if (s2Skus.some((sku) => sku.startsWith("CJ-STORE1-"))) {
     throw new Error(`RLS FAIL: store2 RPC sees store1 SKUs: ${s2Skus.join(", ")}`);
   }
