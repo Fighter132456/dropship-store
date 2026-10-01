@@ -41,14 +41,24 @@ Migrations live in `supabase/migrations/`. Applied to Supabase project ref **`ug
 
 Tables: `tenants`, `products`, `orders`, `order_items`, `cj_sync_log`
 
-## Checkout flow (S36)
+## Checkout flow (S36–S37)
 
 1. Cart stored in `localStorage`
 2. `POST /api/checkout` validates products server-side (tenant-scoped, DB prices)
 3. Redirect to Stripe Checkout Session (test mode)
-4. Success → `/checkout/success`
+4. Stripe webhook `POST /api/webhooks/stripe` → `orders` + `order_items` (idempotent on `stripe_session_id`)
+5. Webhook triggers n8n WF26 → CJ draft (DRY_RUN) + Resend stub
+6. Success → `/checkout/success` + Umami `purchase` event
 
-**S37:** Stripe webhook → `orders` → n8n WF26 → CJ fulfill
+### Local webhook (Stripe CLI)
+
+```bash
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+# Copy whsec_… into .env.local as STRIPE_WEBHOOK_SECRET, restart dev
+pnpm dev
+```
+
+Requires `SUPABASE_SERVICE_ROLE_KEY` in `.env.local` for order persistence.
 
 ## Vercel deploy (Hobby — manual, not in S36)
 

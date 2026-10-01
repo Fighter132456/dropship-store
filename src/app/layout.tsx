@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { UmamiScript } from "@/components/UmamiScript";
 import { getTenant } from "@/lib/tenant";
 import "./globals.css";
 
@@ -37,6 +38,7 @@ export default async function RootLayout({
         className="min-h-full flex flex-col"
         style={{ backgroundColor: bg, color: text }}
       >
+        <UmamiScript />
         {children}
       </body>
     </html>

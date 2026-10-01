@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import Stripe from "stripe";
 import { getProductsByIds } from "@/lib/products";
 import { getStripe } from "@/lib/stripe";
 import { getTenantId } from "@/lib/tenant";
@@ -44,7 +45,10 @@ export async function POST(request: Request) {
       lineItems.push({
         price_data: {
           currency: "pln",
-          product_data: { name: product.title },
+          product_data: {
+            name: product.title,
+            metadata: { product_id: product.id },
+          } as Stripe.Checkout.SessionCreateParams.LineItem.PriceData.ProductData,
           unit_amount: product.price_cents,
         },
         quantity: item.qty,
@@ -54,6 +58,11 @@ export async function POST(request: Request) {
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
     const stripe = getStripe();
 
+    const orderItems = items.map((item) => ({
+      productId: item.productId,
+      qty: item.qty,
+    }));
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
@@ -61,6 +70,7 @@ export async function POST(request: Request) {
       cancel_url: `${appUrl}/cart`,
       metadata: {
         tenant_id: tenantId,
+        order_items: JSON.stringify(orderItems),
       },
     });
 
