@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import type { CartItem, Product } from "@/types/store";
 import { formatPrice } from "@/lib/format";
 
 const CART_KEY = "dropship-cart";
+
+function readCart(): CartItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function subscribeCart(onStoreChange: () => void) {
+  window.addEventListener("cart-updated", onStoreChange);
+  return () => window.removeEventListener("cart-updated", onStoreChange);
+}
 
 type CartViewProps = {
   products: Product[];
@@ -13,24 +28,9 @@ type CartViewProps = {
 };
 
 export function CartView({ products, primaryColor = "#2563eb" }: CartViewProps) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const items = useSyncExternalStore(subscribeCart, readCart, () => []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const loadCart = useCallback(() => {
-    try {
-      const raw = localStorage.getItem(CART_KEY);
-      setItems(raw ? (JSON.parse(raw) as CartItem[]) : []);
-    } catch {
-      setItems([]);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadCart();
-    window.addEventListener("cart-updated", loadCart);
-    return () => window.removeEventListener("cart-updated", loadCart);
-  }, [loadCart]);
 
   const productMap = new Map(products.map((p) => [p.id, p]));
 
