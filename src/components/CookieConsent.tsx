@@ -44,8 +44,8 @@ export function CookieConsent({ primaryColor = "#2563eb" }: CookieConsentProps) 
     >
       <div className="mx-auto flex max-w-4xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm leading-relaxed text-slate-700">
-          We use essential cookies for the cart and checkout. Analytics cookies (Umami, no
-          personal data sold) load only if you accept. See our{" "}
+          We use essential cookies for the cart and checkout. Anonymous page analytics
+          (Umami, cookieless, no personal data sold) runs on every visit. See our{" "}
           <a href="/privacy-policy" className="underline" style={{ color: primaryColor }}>
             Privacy Policy
           </a>
