@@ -68,6 +68,10 @@ export async function POST(request: Request) {
       line_items: lineItems,
       success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/cart`,
+      shipping_address_collection: {
+        allowed_countries: ["PL", "DE", "CZ", "SK", "AT", "NL", "BE", "FR", "IT", "ES"],
+      },
+      phone_number_collection: { enabled: true },
       metadata: {
         tenant_id: tenantId,
         order_items: JSON.stringify(orderItems),

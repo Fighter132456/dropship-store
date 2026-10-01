@@ -5,14 +5,13 @@ import { Header } from "@/components/Header";
 
 type StoreShellProps = {
   tenant: Tenant;
-  cartCount?: number;
   children: ReactNode;
 };
 
-export function StoreShell({ tenant, cartCount, children }: StoreShellProps) {
+export function StoreShell({ tenant, children }: StoreShellProps) {
   return (
     <>
-      <Header tenant={tenant} cartCount={cartCount} />
+      <Header tenant={tenant} />
       {children}
       <Footer tenant={tenant} />
     </>

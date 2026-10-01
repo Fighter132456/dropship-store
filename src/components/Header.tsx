@@ -1,12 +1,12 @@
 import Link from "next/link";
+import { CartCountLink } from "@/components/CartCountLink";
 import type { Tenant } from "@/types/store";
 
 type HeaderProps = {
   tenant: Tenant;
-  cartCount?: number;
 };
 
-export function Header({ tenant, cartCount = 0 }: HeaderProps) {
+export function Header({ tenant }: HeaderProps) {
   const primary = tenant.theme_json.colors?.primary ?? "#2563eb";
 
   return (
@@ -23,13 +23,7 @@ export function Header({ tenant, cartCount = 0 }: HeaderProps) {
             <p className="text-sm text-slate-600">{tenant.theme_json.copy.tagline}</p>
           ) : null}
         </div>
-        <Link
-          href="/cart"
-          className="rounded-lg px-4 py-2 text-sm font-medium text-white"
-          style={{ backgroundColor: primary }}
-        >
-          Cart ({cartCount})
-        </Link>
+        <CartCountLink primaryColor={primary} />
       </div>
     </header>
   );
