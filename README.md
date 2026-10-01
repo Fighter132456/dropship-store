@@ -26,6 +26,18 @@ On plain `localhost`, middleware defaults to tenant `store1`.
 
 Alternative: [http://store1.localhost:3000](http://store1.localhost:3000)
 
+### Store 2 (QA — no prod DNS yet)
+
+Store2 shares the same Supabase project and Vercel deployment. Use query param until `store2.fighter132456.pl` (Vercel Pro + DNS):
+
+| Environment | URL |
+|-------------|-----|
+| Local | [http://localhost:3000?tenant=store2](http://localhost:3000?tenant=store2) |
+| Prod (store1 host) | [https://store1.fighter132456.pl/?tenant=store2](https://store1.fighter132456.pl/?tenant=store2) |
+| Vercel preview | `https://<preview-id>.vercel.app/?tenant=store2` |
+
+Umami website_id for store2: `aff7de94-597b-41df-afc8-3d81fab4f609` (from `projects.yaml`).
+
 ## Tenant routing
 
 | Environment | Resolution |
@@ -75,6 +87,15 @@ pnpm build    # production build
 pnpm lint     # ESLint
 pnpm typecheck
 ```
+
+## Observability
+
+- **Umami:** consent-gated via `AnalyticsLoader`
+- **Sentry (optional):** set `NEXT_PUBLIC_SENTRY_DSN` — browser SDK via CDN, free tier only
+
+## GSC
+
+See [docs/GSC-STORE1-PREP.md](docs/GSC-STORE1-PREP.md) for Search Console steps (CEO DNS).
 
 ## Related
 

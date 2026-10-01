@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AnalyticsLoader } from "@/components/AnalyticsLoader";
 import { CookieConsent } from "@/components/CookieConsent";
+import { SentryLoader } from "@/components/SentryLoader";
 import { getTenant } from "@/lib/tenant";
 import "./globals.css";
 
@@ -63,6 +64,10 @@ export default async function RootLayout({
         style={{ backgroundColor: bg, color: text }}
       >
         <AnalyticsLoader websiteId={umamiId} baseUrl={umamiBase} />
+        <SentryLoader
+          dsn={process.env.NEXT_PUBLIC_SENTRY_DSN}
+          environment={process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "development"}
+        />
         <CookieConsent primaryColor={primary} />
         {children}
       </body>
