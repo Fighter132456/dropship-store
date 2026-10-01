@@ -3,24 +3,8 @@
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import type { CartItem, Product } from "@/types/store";
+import { readCartSnapshot, subscribeCart } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
-
-const CART_KEY = "dropship-cart";
-
-function readCart(): CartItem[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? (JSON.parse(raw) as CartItem[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function subscribeCart(onStoreChange: () => void) {
-  window.addEventListener("cart-updated", onStoreChange);
-  return () => window.removeEventListener("cart-updated", onStoreChange);
-}
 
 type CartViewProps = {
   products: Product[];
@@ -28,7 +12,7 @@ type CartViewProps = {
 };
 
 export function CartView({ products, primaryColor = "#2563eb" }: CartViewProps) {
-  const items = useSyncExternalStore(subscribeCart, readCart, () => []);
+  const items = useSyncExternalStore(subscribeCart, readCartSnapshot, () => []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

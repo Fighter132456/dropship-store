@@ -1,24 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { CartItem } from "@/types/store";
-
-const CART_KEY = "dropship-cart";
-
-function readCart(): CartItem[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    return raw ? (JSON.parse(raw) as CartItem[]) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeCart(items: CartItem[]) {
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
-  window.dispatchEvent(new Event("cart-updated"));
-}
+import { readCartSnapshot, writeCart } from "@/lib/cart-store";
 
 type AddToCartButtonProps = {
   productId: string;
@@ -32,7 +15,7 @@ export function AddToCartButton({
   const [added, setAdded] = useState(false);
 
   function handleAdd() {
-    const cart = readCart();
+    const cart = [...readCartSnapshot()];
     const existing = cart.find((item) => item.productId === productId);
 
     if (existing) {
