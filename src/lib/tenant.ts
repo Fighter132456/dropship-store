@@ -1,5 +1,6 @@
 import { cookies, headers } from "next/headers";
 import type { Tenant, TenantTheme } from "@/types/store";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const DEFAULT_THEME: TenantTheme = {
@@ -37,8 +38,8 @@ export async function getTenant(): Promise<Tenant | null> {
   const tenantId = await getTenantId();
   if (!tenantId) return null;
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
+  const admin = createAdminClient();
+  const { data, error } = await admin
     .from("tenants")
     .select("id, slug, domain, name, theme_json, status")
     .eq("id", tenantId)
