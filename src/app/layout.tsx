@@ -50,7 +50,12 @@ export default async function RootLayout({
   const primary = tenant?.theme_json.colors?.primary ?? "#2563eb";
   const umamiId =
     tenant?.theme_json.umami_website_id ??
-    (tenant?.slug === "store1" ? process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID : undefined);
+    (tenant?.slug === "store1"
+      ? process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID
+      : tenant?.slug === "store2"
+        ? (process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID_STORE2 ??
+          "aff7de94-597b-41df-afc8-3d81fab4f609")
+        : undefined);
   const umamiBase =
     process.env.NEXT_PUBLIC_UMAMI_BASE_URL ?? "https://analytics.fighter132456.pl";
 
