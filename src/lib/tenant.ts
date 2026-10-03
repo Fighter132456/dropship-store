@@ -1,5 +1,6 @@
 import { cookies, headers } from "next/headers";
 import type { Tenant, TenantTheme } from "@/types/store";
+import { E2E_MOCK_TENANT, isE2eMockTenant } from "@/lib/e2e-mock";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -35,6 +36,8 @@ export async function getTenantSlug(): Promise<string | null> {
 }
 
 export async function getTenant(): Promise<Tenant | null> {
+  if (isE2eMockTenant()) return E2E_MOCK_TENANT;
+
   const tenantId = await getTenantId();
   if (!tenantId) return null;
 
