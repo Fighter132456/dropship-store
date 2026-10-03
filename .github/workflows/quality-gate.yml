@@ -19,3 +19,12 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run typecheck
       - run: pnpm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      - run: pnpm run test:e2e:install
+      - run: pnpm run test:e2e
+        env:
+          E2E_MOCK_TENANT: "1"
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key

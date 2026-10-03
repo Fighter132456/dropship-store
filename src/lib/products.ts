@@ -1,8 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
+import { isE2eMockTenant } from "@/lib/e2e-mock";
 import { getTenantId } from "@/lib/tenant";
 import type { Product } from "@/types/store";
 
 export async function getProductsForCurrentTenant(): Promise<Product[]> {
+  if (isE2eMockTenant()) return [];
+
   const tenantId = await getTenantId();
   if (!tenantId) return [];
 

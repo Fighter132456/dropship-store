@@ -1,10 +1,22 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { E2E_MOCK_TENANT } from "@/lib/e2e-mock";
 import { resolveTenantLookup } from "@/lib/tenant";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/tenant-not-found") {
     return NextResponse.next();
+  }
+
+  if (process.env.E2E_MOCK_TENANT === "1") {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-tenant-id", E2E_MOCK_TENANT.id);
+    requestHeaders.set("x-tenant-slug", E2E_MOCK_TENANT.slug);
+    requestHeaders.set("x-tenant-domain", E2E_MOCK_TENANT.domain);
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    response.cookies.set("tenant-id", E2E_MOCK_TENANT.id, { path: "/" });
+    response.cookies.set("tenant-slug", E2E_MOCK_TENANT.slug, { path: "/" });
+    return response;
   }
 
   const host = request.headers.get("host") ?? "localhost";
