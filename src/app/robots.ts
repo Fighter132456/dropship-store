@@ -7,7 +7,11 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const base = host ? `https://${host.split(":")[0]}` : undefined;
 
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/api/", "/checkout/", "/tenant-not-found"],
+    },
     ...(base ? { sitemap: `${base}/sitemap.xml` } : {}),
   };
 }

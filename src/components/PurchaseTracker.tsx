@@ -46,12 +46,25 @@ export function PurchaseTracker({ sessionId }: PurchaseTrackerProps) {
           return;
         }
 
-        // Umami (store1: website_id 6ce159dc-88eb-49e8-bcba-7d15934a3760): custom event
-        // "purchase" with revenue (major units) + currency. In Umami, mark revenue as
-        // goal metric; do not duplicate GA4 purchase unless GA4 is wired separately.
+        const dedupeKey = `umami_purchase_${id}`;
+        try {
+          if (sessionStorage.getItem(dedupeKey)) {
+            return;
+          }
+          sessionStorage.setItem(dedupeKey, "1");
+        } catch {
+          // sessionStorage unavailable — still attempt one track
+        }
+
+        // Umami custom event "purchase":
+        // - store1 website_id: 6ce159dc-88eb-49e8-bcba-7d15934a3760
+        // - store2 PawNest website_id: aff7de94-597b-41df-afc8-3d81fab4f609
+        // Payload: revenue (major units, number), currency (ISO 4217 uppercase).
+        // In Umami → Settings → Events: enable revenue on "purchase"; do not double-count GA4.
         window.umami?.track("purchase", {
           revenue: data.total_cents / 100,
           currency: (data.currency ?? "pln").toUpperCase(),
+          checkout_session: id,
         });
       } catch {
         // Analytics must not break checkout success UX

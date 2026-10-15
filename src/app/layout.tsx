@@ -5,6 +5,8 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { JsonLd } from "@/components/JsonLd";
 import { SentryLoader } from "@/components/SentryLoader";
 import { getTenantSupportEmail } from "@/lib/faq-content";
+import { isPolishLegal } from "@/lib/legal-content";
+import { tenantOgImageUrl } from "@/lib/seo-meta";
 import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/schema";
 import { getSiteOrigin } from "@/lib/site-url";
 import { getTenant } from "@/lib/tenant";
@@ -26,19 +28,29 @@ export async function generateMetadata(): Promise<Metadata> {
   const description =
     tenant?.theme_json.copy?.tagline ?? "Multi-tenant dropship storefront";
   const domain = tenant?.domain;
+  const siteOrigin = tenant && domain ? `https://${domain}` : null;
+  const ogImage =
+    tenant && siteOrigin ? tenantOgImageUrl(tenant, siteOrigin) : undefined;
 
   return {
     title: { default: title, template: `%s · ${title}` },
     description,
-    ...(domain
+    ...(domain && siteOrigin
       ? {
-          metadataBase: new URL(`https://${domain}`),
+          metadataBase: new URL(siteOrigin),
           openGraph: {
             title,
             description,
             siteName: title,
-            locale: "pl_PL",
+            locale: tenant?.theme_json.copy?.locale === "pl" ? "pl_PL" : "en_US",
             type: "website",
+            ...(ogImage ? { images: [{ url: ogImage, alt: `${title} logo` }] } : {}),
+          },
+          twitter: {
+            card: ogImage ? "summary_large_image" : "summary",
+            title,
+            description,
+            ...(ogImage ? { images: [ogImage] } : {}),
           },
         }
       : {}),
@@ -87,7 +99,10 @@ export default async function RootLayout({
           dsn={process.env.NEXT_PUBLIC_SENTRY_DSN}
           environment={process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? "development"}
         />
-        <CookieConsent primaryColor={primary} />
+        <CookieConsent
+          primaryColor={primary}
+          polish={tenant ? isPolishLegal(tenant) : false}
+        />
         {children}
       </body>
     </html>

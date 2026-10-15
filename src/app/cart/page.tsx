@@ -1,9 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CartView } from "@/components/CartView";
 import { StoreShell } from "@/components/StoreShell";
+import { isPolishLegal } from "@/lib/legal-content";
 import { getProductsForCurrentTenant } from "@/lib/products";
+import { noIndexMetadata } from "@/lib/seo-meta";
 import { getTenant } from "@/lib/tenant";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await getTenant();
+  const title = tenant && isPolishLegal(tenant) ? "Koszyk" : "Cart";
+  return noIndexMetadata(title);
+}
 
 export default async function CartPage() {
   const tenant = await getTenant();

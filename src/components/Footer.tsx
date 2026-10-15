@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Tenant } from "@/types/store";
+import { footerLegalLinks } from "@/lib/legal-content";
 
 type FooterProps = {
   tenant: Tenant;
@@ -19,15 +20,16 @@ export function Footer({ tenant }: FooterProps) {
           <Link href="/#faq" className="hover:underline" style={{ color: primary }}>
             FAQ
           </Link>
-          <Link href="/privacy-policy" className="hover:underline" style={{ color: primary }}>
-            Privacy
-          </Link>
-          <Link href="/terms-of-service" className="hover:underline" style={{ color: primary }}>
-            Terms
-          </Link>
-          <Link href="/refund-policy" className="hover:underline" style={{ color: primary }}>
-            Refunds
-          </Link>
+          {footerLegalLinks(tenant).map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="hover:underline"
+              style={{ color: primary }}
+            >
+              {link.label}
+            </Link>
+          ))}
           <a
             href={`mailto:${supportEmail}`}
             className="hover:underline"

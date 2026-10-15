@@ -23,15 +23,21 @@ function privacyUrl(siteOrigin: string): string {
   return `${siteOrigin}/privacy-policy`;
 }
 
-export function getFaqItems(tenant: Tenant, siteOrigin: string): FaqItemContent[] {
+function deliverySchemaAnswer(tenant: Tenant): string {
+  const display =
+    tenant.theme_json.shipping?.display_pl ??
+    "Standardowa wysyłka na teren Polski i UE zwykle trwa 7–14 dni roboczych od potwierdzenia płatności.";
+  return `${display} Dokładny termin zależy od magazynu i przewoźnika — numer śledzenia otrzymasz e-mailem po nadaniu paczki.`;
+}
+
+function defaultFaqItems(tenant: Tenant, siteOrigin: string): FaqItemContent[] {
   const supportEmail = getTenantSupportEmail(tenant);
 
   return [
     {
       id: "delivery",
       question: "Jak długo trwa dostawa?",
-      schemaAnswer:
-        "Standardowa wysyłka na teren Polski i UE zwykle trwa 7–14 dni roboczych od potwierdzenia płatności. Dokładny termin zależy od magazynu i przewoźnika — numer śledzenia otrzymasz e-mailem po nadaniu paczki.",
+      schemaAnswer: deliverySchemaAnswer(tenant),
     },
     {
       id: "returns",
@@ -54,4 +60,53 @@ export function getFaqItems(tenant: Tenant, siteOrigin: string): FaqItemContent[
       schemaAnswer: `Zasady przetwarzania danych, w tym w celach realizacji zamówienia i analityki, opisuje polityka prywatności (${privacyUrl(siteOrigin)}).`,
     },
   ];
+}
+
+function pawnestFaqItems(tenant: Tenant, siteOrigin: string): FaqItemContent[] {
+  const supportEmail = getTenantSupportEmail(tenant);
+
+  return [
+    {
+      id: "delivery",
+      question: "Jak długo trwa dostawa PawNest?",
+      schemaAnswer: deliverySchemaAnswer(tenant),
+    },
+    {
+      id: "returns",
+      question: "Jak zwrócić akcesorium dla pupila?",
+      schemaAnswer: `Zasady odstąpienia i zwrotu opisuje polityka zwrotów (${refundPolicyUrl(siteOrigin)}). Przy produktach higienicznych lub montowanych na ścianie skontaktuj się z nami przed odesłaniem paczki — podpowiemy, co uwzględnić w zgłoszeniu.`,
+    },
+    {
+      id: "contact",
+      question: "Jak napisać do obsługi PawNest?",
+      schemaAnswer: `${tenant.theme_json.copy?.contact_intro ?? "Napisz na " + supportEmail + "."} Adres: ${supportEmail}. Odpowiadamy w dni robocze, zwykle w ciągu 1–2 dni.`,
+    },
+    {
+      id: "pet-sizing",
+      question: "Jak dobrać rozmiar obroży, szelki lub legowiska?",
+      schemaAnswer:
+        "Zmierz obwód szyi lub klatki piersiowej (szelki) oraz długość ciała w pozycji leżącej (legowisko) i porównaj z tabelą na karcie produktu. Zostaw miejsce na dwa palce między paskiem a skórą. W razie wątpliwości napisz do obsługi przed zakupem — podpowiemy na podstawie rasy i wagi.",
+    },
+  ];
+}
+
+export function getFaqIntro(tenant: Tenant): string {
+  if (tenant.slug === "store2") {
+    return "Krótkie odpowiedzi o dostawie, zwrotach i akcesoriach dla zwierząt. Pełne informacje prawne znajdziesz w linkowanych dokumentach.";
+  }
+  return "Krótkie odpowiedzi o dostawie, zwrotach i kontakcie. Pełne informacje prawne znajdziesz w linkowanych dokumentach.";
+}
+
+export function getFaqItems(tenant: Tenant, siteOrigin: string): FaqItemContent[] {
+  if (tenant.slug === "store2") {
+    return pawnestFaqItems(tenant, siteOrigin);
+  }
+  return defaultFaqItems(tenant, siteOrigin);
+}
+
+export function getDeliveryFaqParagraph(tenant: Tenant): string {
+  const display =
+    tenant.theme_json.shipping?.display_pl ??
+    "Standardowa wysyłka na teren Polski i UE zwykle trwa 7–14 dni roboczych od potwierdzenia płatności.";
+  return `${display} Dokładny termin zależy od magazynu i przewoźnika — numer śledzenia otrzymasz e-mailem po nadaniu paczki.`;
 }

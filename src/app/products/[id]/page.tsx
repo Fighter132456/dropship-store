@@ -6,9 +6,11 @@ import { JsonLd } from "@/components/JsonLd";
 import { StoreShell } from "@/components/StoreShell";
 import { formatPrice } from "@/lib/format";
 import { getProductForCurrentTenant } from "@/lib/products";
-import { buildProductSchema } from "@/lib/schema";
+import { productMetaDescription } from "@/lib/seo-meta";
+import { buildProductBreadcrumbSchema, buildProductSchema } from "@/lib/schema";
 import { getSiteOrigin } from "@/lib/site-url";
 import { getTenant } from "@/lib/tenant";
+import { isPolishLegal } from "@/lib/legal-content";
 
 type ProductPageProps = {
   params: Promise<{ id: string }>;
@@ -26,9 +28,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     return { title: "Product not found" };
   }
 
-  const description =
-    product.description?.slice(0, 155) ??
-    `${product.title} — kup w ${tenant.name}. Dostawa i zwroty: sekcja FAQ na stronie głównej.`;
+  const description = productMetaDescription(product, tenant).slice(0, 160);
 
   return {
     title: product.title,
@@ -60,14 +60,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const primary = tenant.theme_json.colors?.primary ?? "#2563eb";
   const image = product.images_json[0];
   const siteOrigin = await getSiteOrigin(tenant);
-  const productSchema = buildProductSchema(product, siteOrigin);
+  const productSchema = buildProductSchema(product, tenant, siteOrigin);
+  const breadcrumbSchema = buildProductBreadcrumbSchema(tenant, product, siteOrigin);
+  const polish = isPolishLegal(tenant);
 
   return (
     <StoreShell tenant={tenant}>
-      <JsonLd data={productSchema} />
+      <JsonLd data={[productSchema, breadcrumbSchema]} />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <Link href="/" className="mb-6 inline-block text-sm text-slate-600 hover:text-slate-900">
-          ← Back to products
+          {polish ? "← Wróć do sklepu" : "← Back to products"}
         </Link>
 
         <div className="grid gap-8 md:grid-cols-2">
