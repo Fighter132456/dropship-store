@@ -1,14 +1,48 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { JsonLd } from "@/components/JsonLd";
 import { StoreShell } from "@/components/StoreShell";
 import { formatPrice } from "@/lib/format";
 import { getProductForCurrentTenant } from "@/lib/products";
+import { buildProductSchema } from "@/lib/schema";
+import { getSiteOrigin } from "@/lib/site-url";
 import { getTenant } from "@/lib/tenant";
 
 type ProductPageProps = {
   params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const tenant = await getTenant();
+  if (!tenant) {
+    return { title: "Product" };
+  }
+
+  const product = await getProductForCurrentTenant(id);
+  if (!product) {
+    return { title: "Product not found" };
+  }
+
+  const description =
+    product.description?.slice(0, 155) ??
+    `${product.title} — kup w ${tenant.name}. Dostawa i zwroty: sekcja FAQ na stronie głównej.`;
+
+  return {
+    title: product.title,
+    description,
+    alternates: { canonical: `/products/${product.id}` },
+    openGraph: {
+      title: product.title,
+      description,
+      type: "website",
+      locale: "pl_PL",
+      ...(product.images_json[0]?.url ? { images: [{ url: product.images_json[0].url }] } : {}),
+    },
+  };
+}
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
@@ -25,9 +59,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const primary = tenant.theme_json.colors?.primary ?? "#2563eb";
   const image = product.images_json[0];
+  const siteOrigin = await getSiteOrigin(tenant);
+  const productSchema = buildProductSchema(product, siteOrigin);
 
   return (
     <StoreShell tenant={tenant}>
+      <JsonLd data={productSchema} />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <Link href="/" className="mb-6 inline-block text-sm text-slate-600 hover:text-slate-900">
           ← Back to products
@@ -39,7 +76,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={image.url}
-                alt={image.alt ?? product.title}
+                alt={image.alt ?? `${product.title} — zdjęcie produktu`}
                 className="h-full w-full object-cover"
               />
             ) : null}

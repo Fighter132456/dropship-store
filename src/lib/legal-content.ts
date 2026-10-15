@@ -18,11 +18,11 @@ export function privacySections(tenant: Tenant): LegalSection[] {
     },
     {
       title: "What we collect",
-      body: "Order data (email, shipping address, items purchased) via Stripe Checkout. Essential cookies for cart and tenant routing. Analytics (Umami) only after cookie consent — aggregated, no ad profiling.",
+      body: "Order data (email, shipping address, items purchased) via Stripe Checkout. Essential cookies for cart and tenant routing. Anonymous page analytics (Umami, cookieless script) may run on each visit when configured — aggregated counts, no ad profiling or sale of personal data.",
     },
     {
       title: "Legal basis (EU)",
-      body: "Contract performance for orders; legitimate interest for security and fraud prevention; consent for analytics cookies.",
+      body: "Contract performance for orders; legitimate interest for security, fraud prevention, and cookieless analytics where applicable; consent where we use non-essential cookies beyond what is strictly necessary.",
     },
     {
       title: "Retention",

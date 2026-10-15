@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AnalyticsLoader } from "@/components/AnalyticsLoader";
 import { CookieConsent } from "@/components/CookieConsent";
+import { JsonLd } from "@/components/JsonLd";
 import { SentryLoader } from "@/components/SentryLoader";
+import { getTenantSupportEmail } from "@/lib/faq-content";
+import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/schema";
+import { getSiteOrigin } from "@/lib/site-url";
 import { getTenant } from "@/lib/tenant";
 import "./globals.css";
 
@@ -59,6 +63,15 @@ export default async function RootLayout({
   const umamiBase =
     process.env.NEXT_PUBLIC_UMAMI_BASE_URL ?? "https://analytics.fighter132456.pl";
 
+  const siteOrigin = tenant ? await getSiteOrigin(tenant) : null;
+  const globalSchema =
+    tenant && siteOrigin
+      ? [
+          buildOrganizationSchema(tenant, siteOrigin, getTenantSupportEmail(tenant)),
+          buildWebSiteSchema(tenant, siteOrigin),
+        ]
+      : null;
+
   return (
     <html
       lang="pl"
@@ -68,6 +81,7 @@ export default async function RootLayout({
         className="min-h-full flex flex-col"
         style={{ backgroundColor: bg, color: text }}
       >
+        {globalSchema ? <JsonLd data={globalSchema} /> : null}
         <AnalyticsLoader websiteId={umamiId} baseUrl={umamiBase} />
         <SentryLoader
           dsn={process.env.NEXT_PUBLIC_SENTRY_DSN}
