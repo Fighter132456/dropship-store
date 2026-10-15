@@ -16,6 +16,9 @@ export function Footer({ tenant }: FooterProps) {
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
         <p>{tenant.theme_json.copy?.footer ?? `© ${new Date().getFullYear()} ${tenant.name}`}</p>
         <nav className="flex flex-wrap gap-x-4 gap-y-2">
+          <Link href="/#faq" className="hover:underline" style={{ color: primary }}>
+            FAQ
+          </Link>
           <Link href="/privacy-policy" className="hover:underline" style={{ color: primary }}>
             Privacy
           </Link>

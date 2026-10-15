@@ -46,6 +46,9 @@ export function PurchaseTracker({ sessionId }: PurchaseTrackerProps) {
           return;
         }
 
+        // Umami (store1: website_id 6ce159dc-88eb-49e8-bcba-7d15934a3760): custom event
+        // "purchase" with revenue (major units) + currency. In Umami, mark revenue as
+        // goal metric; do not duplicate GA4 purchase unless GA4 is wired separately.
         window.umami?.track("purchase", {
           revenue: data.total_cents / 100,
           currency: (data.currency ?? "pln").toUpperCase(),

@@ -11,8 +11,10 @@ Store1 has a dedicated property in registry: `sc-domain:store1.fighter132456.pl`
    - Type: `TXT`
    - Name: `store1` (or `@` if using URL-prefix HTML tag on Vercel instead)
    - Value: token from GSC verification wizard
-3. After verified → **Sitemaps** → submit `https://store1.fighter132456.pl/sitemap.xml` (when sitemap route ships)
-4. Optional auto path (when `AGENT_AUTO_PROVISION=1` + CF token set):
+3. After verified → **Sitemaps** → submit `https://store1.fighter132456.pl/sitemap.xml`
+4. **Rich results:** homepage serves `FAQPage` JSON-LD (`/#faq`); validate in [Rich Results Test](https://search.google.com/test/rich-results). Product URLs emit `Product` + `Offer` when catalog is populated.
+5. **Merchant Center:** not in pilot scope; when products go live, feed must match on-page `Product` schema (PLN, absolute image URLs ≥800px, `InStock`/`OutOfStock` aligned with inventory).
+6. Optional auto path (when `AGENT_AUTO_PROVISION=1` + CF token set):
 
 ```bash
 # On VPS — after projects.yaml gsc_property is real (not .example)

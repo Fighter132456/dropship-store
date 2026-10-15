@@ -20,7 +20,7 @@ export function ProductCard({ product, primaryColor = "#2563eb" }: ProductCardPr
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image.url}
-            alt={image.alt ?? product.title}
+            alt={image.alt ?? `${product.title} — zdjęcie produktu`}
             className="h-full w-full object-cover transition group-hover:scale-105"
           />
         ) : (
