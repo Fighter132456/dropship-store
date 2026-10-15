@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { FaqSection } from "@/components/FaqSection";
 import { JsonLd } from "@/components/JsonLd";
+import { PawNestHome } from "@/components/PawNestHome";
 import { ProductCard } from "@/components/ProductCard";
 import { StoreShell } from "@/components/StoreShell";
 import { TenantNotFound } from "@/components/TenantNotFound";
@@ -66,6 +67,16 @@ export default async function HomePage() {
     products.length > 0 ? buildItemListSchema(products, siteOrigin) : null;
   const homeH1 = homePageH1(tenant);
   const primary = tenant.theme_json.colors?.primary ?? "#2563eb";
+
+  if (tenant.slug === "store2") {
+    return (
+      <StoreShell tenant={tenant}>
+        <JsonLd data={faqSchema} />
+        {itemListSchema ? <JsonLd data={itemListSchema} /> : null}
+        <PawNestHome tenant={tenant} products={products} homeH1={homeH1} primary={primary} />
+      </StoreShell>
+    );
+  }
 
   return (
     <StoreShell tenant={tenant}>

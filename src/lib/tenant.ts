@@ -81,7 +81,11 @@ export function resolveTenantLookup(
 ): { field: "slug" | "domain"; value: string } | null {
   const hostname = host.split(":")[0]?.toLowerCase() ?? "";
 
-  if (tenantParam) {
+  const allowQueryTenant =
+    process.env.NODE_ENV !== "production" ||
+    process.env.ALLOW_TENANT_QUERY === "1";
+
+  if (tenantParam && allowQueryTenant) {
     return { field: "slug", value: tenantParam.toLowerCase() };
   }
 

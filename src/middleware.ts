@@ -75,8 +75,12 @@ export async function middleware(request: NextRequest) {
     request: { headers: requestHeaders },
   });
 
-  supabaseResponse.cookies.set("tenant-id", tenant.id, { path: "/" });
-  supabaseResponse.cookies.set("tenant-slug", tenant.slug, { path: "/" });
+  const cookieOpts =
+    process.env.NODE_ENV === "production"
+      ? { path: "/", sameSite: "lax" as const, secure: true, httpOnly: true }
+      : { path: "/" };
+  supabaseResponse.cookies.set("tenant-id", tenant.id, cookieOpts);
+  supabaseResponse.cookies.set("tenant-slug", tenant.slug, cookieOpts);
 
   return supabaseResponse;
 }
