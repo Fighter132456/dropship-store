@@ -1,5 +1,28 @@
 export type TenantStatus = "active" | "inactive" | "suspended";
 
+export type TenantCategoryTheme = {
+  slug: string;
+  nav_pl: string;
+  hero_title: string;
+  hero_teaser: string;
+  image_alt: string;
+  placeholder_url: string;
+};
+
+export type TenantTrustItem = {
+  id: string;
+  label: string;
+  detail: string;
+};
+
+export type TenantShippingRegion = {
+  code: string;
+  label: string;
+  days_min: number;
+  days_max: number;
+  note_pl: string;
+};
+
 export type TenantTheme = {
   logo?: string;
   colors?: {
@@ -7,13 +30,46 @@ export type TenantTheme = {
     secondary?: string;
     background?: string;
     text?: string;
+    accent?: string;
+    muted?: string;
+  };
+  typography?: {
+    heading?: string;
+    body?: string;
   };
   copy?: {
     tagline?: string;
     footer?: string;
+    locale?: string;
+    meta_home_title?: string;
+    meta_home_description?: string;
+    about_short?: string;
+    contact_intro?: string;
+    hero?: {
+      eyebrow?: string;
+      headline?: string;
+      subheadline?: string;
+      cta_primary?: string;
+      cta_secondary?: string;
+    };
+  };
+  categories?: TenantCategoryTheme[];
+  trust_strip?: TenantTrustItem[];
+  shipping?: {
+    regions?: TenantShippingRegion[];
+    free_shipping_threshold_cents?: number | null;
+    display_pl?: string;
   };
   umami_website_id?: string;
   support_email?: string;
+  /** Pre-launch seller identification — replace placeholders before go-live. */
+  legal_entity?: {
+    business_name?: string;
+    address?: string;
+    nip?: string;
+    regon?: string;
+    email?: string;
+  };
 };
 
 export type Tenant = {

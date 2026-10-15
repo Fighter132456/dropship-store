@@ -1,6 +1,11 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { getFaqItems, getTenantSupportEmail } from "@/lib/faq-content";
+import {
+  getDeliveryFaqParagraph,
+  getFaqIntro,
+  getFaqItems,
+  getTenantSupportEmail,
+} from "@/lib/faq-content";
 import { getSiteOrigin } from "@/lib/site-url";
 import type { Tenant } from "@/types/store";
 
@@ -9,20 +14,27 @@ type FaqSectionProps = {
 };
 
 function renderFaqAnswer(
+  tenant: Tenant,
   id: string,
   primary: string,
   supportEmail: string,
 ): ReactNode {
   switch (id) {
     case "delivery":
-      return (
-        <>
-          Standardowa wysyłka na teren Polski i UE zwykle trwa 7–14 dni roboczych od
-          potwierdzenia płatności. Dokładny termin zależy od magazynu i przewoźnika —
-          numer śledzenia otrzymasz e-mailem po nadaniu paczki.
-        </>
-      );
+      return <>{getDeliveryFaqParagraph(tenant)}</>;
     case "returns":
+      if (tenant.slug === "store2") {
+        return (
+          <>
+            Zasady odstąpienia i zwrotu opisuje{" "}
+            <Link href="/refund-policy" className="font-medium underline underline-offset-2">
+              polityka zwrotów
+            </Link>
+            . Przy produktach higienicznych lub montowanych na ścianie skontaktuj się z nami
+            przed odesłaniem paczki — podpowiemy, co uwzględnić w zgłoszeniu.
+          </>
+        );
+      }
       return (
         <>
           Szczegóły zwrotów, reklamacji i odstąpienia od umowy opisujemy w{" "}
@@ -34,6 +46,21 @@ function renderFaqAnswer(
         </>
       );
     case "contact":
+      if (tenant.slug === "store2" && tenant.theme_json.copy?.contact_intro) {
+        return (
+          <>
+            {tenant.theme_json.copy.contact_intro}{" "}
+            <a
+              href={`mailto:${supportEmail}`}
+              className="font-medium underline underline-offset-2"
+              style={{ color: primary }}
+            >
+              {supportEmail}
+            </a>
+            . Odpowiadamy w dni robocze, zwykle w ciągu 1–2 dni.
+          </>
+        );
+      }
       return (
         <>
           Napisz na{" "}
@@ -45,6 +72,15 @@ function renderFaqAnswer(
             {supportEmail}
           </a>
           . Odpowiadamy w dni robocze, zwykle w ciągu 1–2 dni.
+        </>
+      );
+    case "pet-sizing":
+      return (
+        <>
+          Zmierz obwód szyi lub klatki piersiowej (szelki) oraz długość ciała w pozycji
+          leżącej (legowisko) i porównaj z tabelą na karcie produktu. Zostaw miejsce na dwa
+          palce między paskiem a skórą. W razie wątpliwości napisz do obsługi przed zakupem
+          — podpowiemy na podstawie rasy i wagi.
         </>
       );
     case "terms":
@@ -90,10 +126,7 @@ export async function FaqSection({ tenant }: FaqSectionProps) {
         <h2 id="faq-heading" className="text-2xl font-bold tracking-tight text-slate-900">
           Najczęściej zadawane pytania
         </h2>
-        <p className="mt-2 text-slate-600">
-          Krótkie odpowiedzi o dostawie, zwrotach i kontakcie. Pełne informacje prawne
-          znajdziesz w linkowanych dokumentach.
-        </p>
+        <p className="mt-2 text-slate-600">{getFaqIntro(tenant)}</p>
       </div>
       <div className="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white shadow-sm">
         {items.map((item) => (
@@ -112,7 +145,7 @@ export async function FaqSection({ tenant }: FaqSectionProps) {
               </span>
             </summary>
             <p className="mt-3 text-sm leading-relaxed text-slate-600">
-              {renderFaqAnswer(item.id, primary, supportEmail)}
+              {renderFaqAnswer(tenant, item.id, primary, supportEmail)}
             </p>
           </details>
         ))}

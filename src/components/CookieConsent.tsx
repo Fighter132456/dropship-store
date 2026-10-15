@@ -6,6 +6,7 @@ const CONSENT_COOKIE = "cookie-consent";
 
 type CookieConsentProps = {
   primaryColor?: string;
+  polish?: boolean;
 };
 
 function readConsent(): string | null {
@@ -25,7 +26,7 @@ function setConsent(value: "essential" | "analytics") {
   window.dispatchEvent(new Event("cookie-consent-update"));
 }
 
-export function CookieConsent({ primaryColor = "#2563eb" }: CookieConsentProps) {
+export function CookieConsent({ primaryColor = "#2563eb", polish = false }: CookieConsentProps) {
   const consent = useSyncExternalStore(
     subscribeConsent,
     () => readConsent(),
@@ -44,12 +45,33 @@ export function CookieConsent({ primaryColor = "#2563eb" }: CookieConsentProps) 
     >
       <div className="mx-auto flex max-w-4xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm leading-relaxed text-slate-700">
-          We use essential cookies for the cart and checkout. Anonymous page analytics
-          (Umami, cookieless, no personal data sold) runs on every visit. See our{" "}
-          <a href="/privacy-policy" className="underline" style={{ color: primaryColor }}>
-            Privacy Policy
-          </a>
-          .
+          {polish ? (
+            <>
+              Używamy niezbędnych plików cookie (koszyk, rozpoznanie sklepu). Anonimowa analityka
+              stron (Umami, bez cookies reklamowych) może działać przy każdej wizycie. Szczegóły:{" "}
+              <a href="/cookie-policy" className="underline" style={{ color: primaryColor }}>
+                polityka cookies
+              </a>{" "}
+              i{" "}
+              <a href="/privacy-policy" className="underline" style={{ color: primaryColor }}>
+                polityka prywatności
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              We use essential cookies for the cart and checkout. Anonymous page analytics
+              (Umami, cookieless, no personal data sold) runs on every visit. See our{" "}
+              <a href="/cookie-policy" className="underline" style={{ color: primaryColor }}>
+                Cookie Policy
+              </a>{" "}
+              and{" "}
+              <a href="/privacy-policy" className="underline" style={{ color: primaryColor }}>
+                Privacy Policy
+              </a>
+              .
+            </>
+          )}
         </p>
         <div className="flex shrink-0 flex-wrap gap-2">
           <button
@@ -57,7 +79,7 @@ export function CookieConsent({ primaryColor = "#2563eb" }: CookieConsentProps) 
             onClick={() => setConsent("essential")}
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
           >
-            Essential only
+            {polish ? "Tylko niezbędne" : "Essential only"}
           </button>
           <button
             type="button"
@@ -65,7 +87,7 @@ export function CookieConsent({ primaryColor = "#2563eb" }: CookieConsentProps) 
             className="rounded-lg px-4 py-2 text-sm font-medium text-white"
             style={{ backgroundColor: primaryColor }}
           >
-            Accept analytics
+            {polish ? "Akceptuj analitykę" : "Accept analytics"}
           </button>
         </div>
       </div>

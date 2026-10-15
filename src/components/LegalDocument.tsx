@@ -27,7 +27,7 @@ export function LegalDocument({ tenant, title, sections }: LegalDocumentProps) {
             <h2 className="mb-2 text-lg font-semibold" style={{ color: primary }}>
               {section.title}
             </h2>
-            <p className="leading-relaxed text-slate-700">{section.body}</p>
+            <p className="whitespace-pre-line leading-relaxed text-slate-700">{section.body}</p>
           </section>
         ))}
       </div>

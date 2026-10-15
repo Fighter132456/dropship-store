@@ -75,13 +75,31 @@ export async function createTenantScopedClient() {
   return supabase;
 }
 
+function isVercelPreviewHost(hostname: string): boolean {
+  return (
+    hostname.endsWith(".vercel.app") || process.env.VERCEL_ENV === "preview"
+  );
+}
+
+/** Default tenant on Vercel preview URLs (F4 store2 / PawNest). Override via env. */
+function previewDefaultTenantSlug(): string {
+  const fromEnv = process.env.PREVIEW_DEFAULT_TENANT_SLUG?.trim().toLowerCase();
+  return fromEnv || "store2";
+}
+
 export function resolveTenantLookup(
   host: string,
   tenantParam: string | null,
 ): { field: "slug" | "domain"; value: string } | null {
   const hostname = host.split(":")[0]?.toLowerCase() ?? "";
+  const onVercelPreview = isVercelPreviewHost(hostname);
 
-  if (tenantParam) {
+  const allowQueryTenant =
+    process.env.NODE_ENV !== "production" ||
+    process.env.ALLOW_TENANT_QUERY === "1" ||
+    onVercelPreview;
+
+  if (tenantParam && allowQueryTenant) {
     return { field: "slug", value: tenantParam.toLowerCase() };
   }
 
@@ -92,6 +110,10 @@ export function resolveTenantLookup(
 
   if (hostname === "localhost" || hostname === "127.0.0.1") {
     return { field: "slug", value: "store1" };
+  }
+
+  if (onVercelPreview) {
+    return { field: "slug", value: previewDefaultTenantSlug() };
   }
 
   return { field: "domain", value: hostname };

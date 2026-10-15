@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" role="presentation">
+  <defs>
+    <linearGradient id="pn-hero-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332"/>
+      <stop offset="55%" stop-color="#2D6A4F"/>
+      <stop offset="100%" stop-color="#1B4332"/>
+    </linearGradient>
+    <radialGradient id="pn-hero-glow" cx="78%" cy="35%" r="45%">
+      <stop offset="0%" stop-color="#D4A373" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#D4A373" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="pn-leaves" width="120" height="120" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+      <path d="M20 60 Q40 20 60 60 Q40 80 20 60" fill="#F7F5F0" opacity="0.04"/>
+      <path d="M70 30 Q90 10 110 30 Q90 50 70 30" fill="#D4A373" opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1440" height="520" fill="url(#pn-hero-bg)"/>
+  <rect width="1440" height="520" fill="url(#pn-leaves)"/>
+  <rect width="1440" height="520" fill="url(#pn-hero-glow)"/>
+  <path
+    fill="none"
+    stroke="#D4A373"
+    stroke-width="2"
+    opacity="0.25"
+    d="M0 420 C360 360 720 480 1080 400 S1440 440 1440 380"
+  />
+  <g opacity="0.12" transform="translate(1080 120)">
+    <path fill="none" stroke="#F7F5F0" stroke-width="3" d="M0 80c40-70 160-70 200 0"/>
+    <ellipse cx="100" cy="80" rx="55" ry="45" fill="#F7F5F0"/>
+    <circle cx="72" cy="45" r="18" fill="#F7F5F0"/>
+    <circle cx="128" cy="45" r="18" fill="#F7F5F0"/>
+    <circle cx="100" cy="25" r="15" fill="#F7F5F0"/>
+  </g>
+</svg>

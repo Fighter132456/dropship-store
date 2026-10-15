@@ -21,7 +21,6 @@ export async function GET(request: Request) {
       session_id: session.id,
       total_cents: session.amount_total ?? 0,
       currency: session.currency ?? "pln",
-      customer_email: session.customer_details?.email ?? session.customer_email ?? null,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Failed to load session";

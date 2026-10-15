@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PawNest">
+  <defs>
+    <linearGradient id="pn-forest" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D6A4F"/>
+      <stop offset="100%" stop-color="#1B4332"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#F7F5F0"/>
+  <path
+    fill="none"
+    stroke="#D4A373"
+    stroke-width="3"
+    stroke-linecap="round"
+    d="M12 38c8-14 32-14 40 0"
+  />
+  <path
+    fill="none"
+    stroke="#D4A373"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    opacity="0.85"
+    d="M16 36c6-10 26-10 32 0"
+  />
+  <ellipse cx="32" cy="36" rx="11" ry="9" fill="url(#pn-forest)"/>
+  <circle cx="26" cy="28" r="4.2" fill="url(#pn-forest)"/>
+  <circle cx="38" cy="28" r="4.2" fill="url(#pn-forest)"/>
+  <circle cx="32" cy="23" r="3.6" fill="url(#pn-forest)"/>
+</svg>
