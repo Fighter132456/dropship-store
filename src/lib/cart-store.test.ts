@@ -12,6 +12,14 @@ Object.assign(globalThis, {
 
 const { readCartSnapshot, CART_KEY } = await import("./cart-store.ts");
 
+// DROPSHIP-STORE-1-4: same crash (null.map in CartView); snapshot must stay stable
+test("readCartSnapshot returns a stable empty array for stored null", () => {
+  store.set(CART_KEY, "null");
+  const first = readCartSnapshot();
+  assert.deepEqual(first, []);
+  assert.equal(readCartSnapshot(), first);
+});
+
 // DROPSHIP-STORE-1-2: CartView crashed on items.map when snapshot was null
 for (const raw of ["null", "{}", '"x"', "42"]) {
   test(`readCartSnapshot returns an array for stored value ${raw}`, () => {
