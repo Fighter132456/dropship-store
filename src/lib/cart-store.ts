@@ -12,7 +12,8 @@ export function readCartSnapshot(): CartItem[] {
     const raw = localStorage.getItem(CART_KEY) ?? "";
     if (raw === cachedRaw) return cachedItems;
     cachedRaw = raw;
-    cachedItems = raw ? (JSON.parse(raw) as CartItem[]) : [];
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    cachedItems = Array.isArray(parsed) ? (parsed as CartItem[]) : [];
     return cachedItems;
   } catch {
     cachedRaw = "";
